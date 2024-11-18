@@ -5,3 +5,6 @@
 /.vs/RPI/FileContentIndex
 /.vs/RPI/v17
 /.vs
+/.cache
+/dist
+/node_modules
