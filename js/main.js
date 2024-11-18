@@ -1,4 +1,4 @@
-import {setFormValue, submitSignUpForm, validateEmail, validatePassword} from "./utils.js"
+import { setFormValue, submitSignUpForm, validateEmail, validatePassword, formValidation, updateSignUpButtonState, updateSignInButtonState } from "./utils.js"
 
 
 ////// ДЕМОНСТРАЦИОННЫЙ УЧАСТОК КОДА. На оценку не влияет, исключительно для саморазвития.
@@ -37,39 +37,107 @@ const password_id = 'password'
 const email_id = 'email'
 
 const sign_in_link_id = 'sign_in_link'
+const sign_up_link_id = 'sign_up_link';
 const sign_up_form_id = 'sign_up_form'
-// const sign_in_form_id = 'sign_in_form'  // Пригодится
 const sign_up_btn_id = 'sign_up_btn'
+const sign_in_btn_id = 'sign_in_btn'
 const sign_in_form_id = 'sign_in_form'
 
+const login_email_id = 'login_email'
+const login_password_id = 'login_password'
 
 // Получаем элемент DOM-дерева по id и присваиваем значение аттрибуту oninput
 // oninput вызывается с параметром "event" каждый раз, когда ввод меняется
 // Значение, которое мы присваеваем этому аттрибуту - это функция, определённая в стрелочном стиле
 // Гуглить по тегам "события JS", "onchange/oninput HTML", "стрелочные функции JS", ...
 
+// Обработчик для формы регистрации
 const first_name = document.getElementById(first_name_id);
-first_name.oninput = (e) => setFormValue(first_name_id, e.target.value)  // Установить значение без валидации
+first_name.oninput = (e) => setFormValue(first_name_id, e.target.value)  
+
 
 const email = document.getElementById(email_id);
-email.oninput = (e) => setFormValue(email_id, e.target.value, validateEmail) // Установить значение с валидацией
+email.oninput = (e) => {
+
+    setFormValue(email_id, e.target.value, validateEmail)
+    if (formValidation.email) {
+        email.classList.remove('invalid');
+        email.classList.add('valid');
+    } else {
+        email.classList.remove('valid');
+        email.classList.add('invalid');
+    }
+    updateSignUpButtonState();
+} 
+
+password.oninput = (e) => {
+    setFormValue(password_id, e.target.value, validatePassword);
+
+    if (formValidation.password) {
+        password.classList.remove('invalid');
+        password.classList.add('valid');
+    } else {
+        password.classList.remove('valid');
+        password.classList.add('invalid');
+    }
+    updateSignUpButtonState();
+};
+
+// Обработчик для формы авторизации
+const login_email = document.getElementById(login_email_id);
+login_email.oninput = (e) => {
+
+    setFormValue(login_email_id, e.target.value, validateEmail);
+
+    if (formValidation.email) {
+        login_email.classList.remove('invalid');
+        login_email.classList.add('valid');
+    } else {
+        login_email.classList.remove('valid');
+        login_email.classList.add('invalid');
+    }
+    updateSignInButtonState();
+}
 
 
+const login_password = document.getElementById(login_password_id);
+login_password.oninput = (e) => {
+    setFormValue(login_password_id, e.target.value, validatePassword);
 
-// Меняем стили объекта DOM дерева. Это позволяет скрыть форму регистрации и показать форму авторизации
-// Объект формы не исключается из DOM дерева, а просто становистя невидимым
+    if (formValidation.login_password) {
+        login_password.classList.remove('invalid');
+        login_password.classList.add('valid');
+    } else {
+        login_password.classList.remove('valid');
+        login_password.classList.add('invalid');
+    }
+    updateSignInButtonState();
+};
+
+// Переключение между формами
 const switch_to_sign_in = document.getElementById(sign_in_link_id);
 switch_to_sign_in.onclick = (e) => {
-  document.getElementById(sign_up_form_id).style.display = "none"
-  document.getElementById(sign_in_form_id).style.display = ""
+    document.getElementById(sign_up_form_id).style.display = "none"
+    document.getElementById(sign_in_form_id).style.display = "block"
 }
 
+const switch_to_sign_up = document.getElementById(sign_up_link_id);
+switch_to_sign_up.onclick = (e) => {
+    document.getElementById(sign_in_form_id).style.display = "none";
+    document.getElementById(sign_up_form_id).style.display = "block";
+};
 
+// Обработчик для кнопки регистрации
 const sign_up_btn = document.getElementById(sign_up_btn_id);
 sign_up_btn.onclick = (e) => {
-  // При нажатии кнопки в форме по умолчанию происходит перезагрузка страницы.
-  // Чтобы отключить его, нужно отменить стандартное поведение события
-  e.preventDefault()
-  submitSignUpForm()
+
+    e.preventDefault();
+    submitSignUpForm();
 }
 
+// Обработчик для кнопки авторизации
+const sign_in_btn = document.getElementById(sign_in_btn_id);
+sign_in_btn.onclick = (e) => {
+    e.preventDefault();
+    submitSignInForm();
+}
